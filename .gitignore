@@ -1,20 +1,43 @@
+# Python
 .venv/
+venv/
 __pycache__/
 *.py[cod]
+
+# Secrets / local configuration
 .env
 
-# Datasets
+# Local datasets and raw data
 data/
+TRAINING_SUBSET/
+VALIDATION_SUBSET/
 *.tif
 *.tiff
 *.zip
 *.7z
 *.rar
+*.zst
 
-# Outputs
+# Model checkpoints
 models/
+*.pt
+*.pth
+*.ckpt
+
+# Generated outputs and runtime files
 outputs/
 logs/
 
+# Development artifacts
 .ipynb_checkpoints/
 .vscode/
+.pytest_cache/
+.mypy_cache/
+
+# Transfer / temporary files
+received_files.txt
+received_manifest.csv
+
+# OS files
+Thumbs.db
+.DS_Store
