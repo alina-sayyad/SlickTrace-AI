@@ -1,4 +1,4 @@
-
+﻿
 from pathlib import Path
 import base64
 import io
@@ -9,8 +9,9 @@ import pandas as pd
 import streamlit as st
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_ROOT = PROJECT_ROOT / "outputs"
-DEMO_ROOT = PROJECT_ROOT / "demo_tiffs"
+DEMO_DATA_ROOT = PROJECT_ROOT / "demo_data"
+OUTPUT_ROOT = DEMO_DATA_ROOT / "outputs"
+DEMO_ROOT = DEMO_DATA_ROOT / "demo_tiffs"
 INPUT_ROOT = PROJECT_ROOT / "data" / "incoming"
 
 SPILL_LAT = 28.942782
@@ -605,7 +606,7 @@ def build_vessel_display_table(rank):
 
     out = pd.DataFrame(index=rank.index)
     out["Rank"] = range(1, len(rank) + 1)
-    out["MMSI"] = rank[mmsi].astype(str) if mmsi else "—"
+    out["MMSI"] = rank[mmsi].astype(str) if mmsi else "â€”"
     out["Vessel"] = rank[name].fillna("Unknown vessel").astype(str) if name else "Unknown vessel"
     out["Type"] = rank[vessel_type].fillna("Unknown").astype(str) if vessel_type else "Unknown"
 
@@ -649,7 +650,7 @@ def make_map(lat=SPILL_LAT, lon=SPILL_LON):
         fill_color="#b66b48",
         fill_opacity=.16,
         weight=2,
-        tooltip="Detected spill area — prototype geometry",
+        tooltip="Detected spill area â€” prototype geometry",
     ).add_to(m)
 
     folium.CircleMarker(
@@ -669,7 +670,7 @@ def make_map(lat=SPILL_LAT, lon=SPILL_LON):
     ).add_to(m)
 
     st_folium(m, height=300, use_container_width=True, returned_objects=[])
-    st.caption("Map base: OpenStreetMap · Spill and origin markers are prototype investigation outputs.")
+    st.caption("Map base: OpenStreetMap Â· Spill and origin markers are prototype investigation outputs.")
 
 def hero():
     md(
@@ -712,7 +713,7 @@ def page_case_file():
                 <div class="principle-body">
                     SlickTrace AI combines satellite imagery, environmental modelling,
                     and AIS data to provide evidence-based vessel attribution for oil spills.
-                    <strong>It supports investigation — it does not declare any vessel guilty.</strong>
+                    <strong>It supports investigation â€” it does not declare any vessel guilty.</strong>
                 </div>
             </div>
             """,
@@ -737,7 +738,7 @@ def page_case_file():
             help="Preferably a two-band VV/VH SAR scene.",
         )
         md(
-            '<div style="font:10px Inter,sans-serif;color:#777;text-align:right;">Supported format: .tif / .tiff &nbsp;·&nbsp; Sentinel-1 SAR, 2 bands: VV, VH</div></div>',
+            '<div style="font:10px Inter,sans-serif;color:#777;text-align:right;">Supported format: .tif / .tiff &nbsp;Â·&nbsp; Sentinel-1 SAR, 2 bands: VV, VH</div></div>',
             unsafe_allow_html=True,
         )
 
@@ -749,7 +750,7 @@ def page_case_file():
                 import rasterio
                 with rasterio.open(path) as src:
                     st.success(
-                        f"Input received — {src.count} bands · {src.width} × {src.height} · {src.crs or 'CRS not defined'}"
+                        f"Input received â€” {src.count} bands Â· {src.width} Ã— {src.height} Â· {src.crs or 'CRS not defined'}"
                     )
             except Exception as e:
                 st.warning(f"Input saved, but GeoTIFF inspection failed: {e}")
@@ -829,10 +830,10 @@ def page_case_file():
             if not row.empty:
                 r = row.iloc[0]
                 vals = [
-                    ("Dice", r.get("dice", "—")),
-                    ("IoU", r.get("iou", "—")),
-                    ("Precision", r.get("precision", "—")),
-                    ("Recall", r.get("recall", "—")),
+                    ("Dice", r.get("dice", "â€”")),
+                    ("IoU", r.get("iou", "â€”")),
+                    ("Precision", r.get("precision", "â€”")),
+                    ("Recall", r.get("recall", "â€”")),
                 ]
                 md(
                     '<div class="metrics-strip">' +
@@ -887,19 +888,19 @@ def page_case_file():
             try:
                 score_fmt = f"{float(score):.2f}"
             except Exception:
-                score_fmt = "—"
+                score_fmt = "â€”"
 
             try:
                 dist_fmt = f"{float(rr.get(dist_col)):.1f}"
             except Exception:
-                dist_fmt = "—"
+                dist_fmt = "â€”"
 
             status = "High" if idx == 1 else ("Medium" if idx <= 3 else "Low")
             rows.append(
                 f"""
                 <tr>
                     <td class="rank-cell">{idx}</td>
-                    <td>{html.escape(str(rr.get(mmsi_col, "—")))}</td>
+                    <td>{html.escape(str(rr.get(mmsi_col, "â€”")))}</td>
                     <td>{html.escape(str(rr.get(name_col, "Unknown vessel")))}</td>
                     <td>{html.escape(str(rr.get(type_col, "Unknown")))}</td>
                     <td>{score_fmt}</td>
@@ -924,7 +925,7 @@ def page_case_file():
 
     md("</div>", unsafe_allow_html=True)
     md(
-        '<div class="footer">SLICKTRACE AI · SIH26143 · Evidence-based prototype workspace · Candidate vessels are leads for investigation, not proof of responsibility.</div>',
+        '<div class="footer">SLICKTRACE AI Â· SIH26143 Â· Evidence-based prototype workspace Â· Candidate vessels are leads for investigation, not proof of responsibility.</div>',
         unsafe_allow_html=True,
     )
 
@@ -1063,7 +1064,7 @@ def page_model_evidence():
             try:
                 st.metric(label, f"{float(row[key]):.3f}")
             except Exception:
-                st.metric(label, "—")
+                st.metric(label, "â€”")
 
     md(
         """
@@ -1085,9 +1086,9 @@ def page_spill():
     md('<div class="panel" style="margin-top:18px;"><div class="panel-title">Spill Analysis</div></div>', unsafe_allow_html=True)
     df = load_csv(OUTPUT_ROOT / "part_iii_predictions" / "spill_events_geospatial.csv")
     a,b,c = st.columns(3)
-    a.metric("Selected spill area", f"{SPILL_AREA:.2f} km²")
-    b.metric("Centroid latitude", f"{SPILL_LAT:.4f}°")
-    c.metric("Centroid longitude", f"{SPILL_LON:.4f}°")
+    a.metric("Selected spill area", f"{SPILL_AREA:.2f} kmÂ²")
+    b.metric("Centroid latitude", f"{SPILL_LAT:.4f}Â°")
+    c.metric("Centroid longitude", f"{SPILL_LON:.4f}Â°")
     if not df.empty:
         # Show investigation-relevant fields instead of long filesystem paths.
         preferred = [
@@ -1098,7 +1099,7 @@ def page_spill():
         ]
         view = df[preferred].copy() if preferred else df.copy()
         rename = {
-            "area_km2": "Area (km²)",
+            "area_km2": "Area (kmÂ²)",
             "centroid_lat": "Centroid Lat",
             "centroid_lon": "Centroid Lon",
             "predicted_pixels": "Predicted Pixels",
@@ -1124,7 +1125,7 @@ def page_vessels():
             <div class="principle-body">
                 Historical AIS observations are used to identify vessels operating in the
                 investigation area and organize their evidence. The ranking is a lead-generation
-                mechanism for investigators — it does not establish responsibility.
+                mechanism for investigators â€” it does not establish responsibility.
             </div>
         </div>
         """,
@@ -1208,7 +1209,7 @@ def page_about():
             </div>
             <div class="principle-body">
                 SlickTrace AI is an evidence-based investigative decision-support system
-                developed for <strong>SIH26143 — Oil Spill Detection & Vessel Attribution System</strong>.
+                developed for <strong>SIH26143 â€” Oil Spill Detection & Vessel Attribution System</strong>.
                 Its purpose is to connect satellite observations, spill geometry, environmental
                 movement and historical AIS evidence into one explainable investigation workflow.
             </div>
@@ -1283,20 +1284,20 @@ def page_about():
         <div class="panel" style="margin-top:14px;">
             <div class="panel-title">What SlickTrace Does Not Claim</div>
             <div class="principle-body">
-                <strong>Detection ≠ Attribution.</strong>
+                <strong>Detection â‰  Attribution.</strong>
                 Detecting a slick does not identify its source vessel.<br><br>
 
-                <strong>Spill location ≠ Release location.</strong>
+                <strong>Spill location â‰  Release location.</strong>
                 Oil can move after release, so the observed slick is not automatically the
                 release point.<br><br>
 
-                <strong>Nearest vessel ≠ Responsible vessel.</strong>
+                <strong>Nearest vessel â‰  Responsible vessel.</strong>
                 Geographic proximity alone is insufficient for attribution.<br><br>
 
-                <strong>Backward drift ≠ Exact source proof.</strong>
+                <strong>Backward drift â‰  Exact source proof.</strong>
                 The prototype estimates a probable origin region under its assumptions.<br><br>
 
-                <strong>Evidence score ≠ probability of guilt.</strong>
+                <strong>Evidence score â‰  probability of guilt.</strong>
                 A ranking helps investigators prioritize review; it is not a legal or factual
                 declaration of responsibility.<br><br>
 
@@ -1377,3 +1378,5 @@ elif page == "Vessel Attribution":
     page_vessels()
 else:
     page_about()
+
+

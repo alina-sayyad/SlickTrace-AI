@@ -41,3 +41,15 @@ received_manifest.csv
 # OS files
 Thumbs.db
 .DS_Store
+
+# Public lightweight demo data
+!demo_data/
+!demo_data/**
+!demo_data/demo_tiffs/
+!demo_data/demo_tiffs/**
+
+# Public lightweight demo data
+!demo_data/
+!demo_data/**
+!demo_data/demo_tiffs/
+!demo_data/demo_tiffs/**
